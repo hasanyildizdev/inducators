@@ -7,3 +7,4 @@ This is for test purpose only.
 - EMA
 - Stochastic
 - MACD
+- BB

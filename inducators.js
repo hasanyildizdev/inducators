@@ -2,9 +2,10 @@
 const { green, red } = require('ansicolor');
 const ccxt = require('ccxt');
 var RSI = require('technicalindicators').RSI;
-const SMA = require('technicalindicators').SMA
-const EMA = require('technicalindicators').EMA
-const Stochastic = require('technicalindicators').Stochastic
+const SMA = require('technicalindicators').SMA;
+const EMA = require('technicalindicators').EMA;
+const Stochastic = require('technicalindicators').Stochastic;
+var MACD = require('technicalindicators').MACD;
 
 const coin = 'BTC/USDT';
 const timeframe = '1M';
@@ -39,17 +40,32 @@ async function EMA_function(closeValues, period) {
     console.log(red("EMA: "), green(Math.round(result[size - 1])));
 }
 
+
 async function Stochastic_function(closeValues, highValues, lowValues, period, signalPeriod) {
-        let input = {
-            high: highValues,
-            low: lowValues,
-            close: closeValues,
-            period: period,
-            signalPeriod: signalPeriod
-          };
-        const result = Stochastic.calculate(input);
-        var size = Object.keys(result).length;
-        console.log(red("Stochastic: "), green(JSON.stringify(result[size-1]))); 
+    let input = {
+        high: highValues,
+        low: lowValues,
+        close: closeValues,
+        period: period,
+        signalPeriod: signalPeriod
+    };
+    const result = Stochastic.calculate(input);
+    var size = Object.keys(result).length;
+    console.log(red("Stochastic: "), green(JSON.stringify(result[size - 1])));
+}
+
+async function MACD_function(closeValues,fastPeriod,slowPeriod,signalPeriod) {
+    var macdInput = {
+        values:closeValues,
+        fastPeriod: fastPeriod,
+        slowPeriod: slowPeriod,
+        signalPeriod: signalPeriod,
+        SimpleMAOscillator: false,
+        SimpleMASignal: false
+    }
+    const result = MACD.calculate(macdInput);
+    var size = Object.keys(result).length;
+    console.log(red("MACD: "), green(JSON.stringify(result[size - 1])));
 }
 
 (async function () {
@@ -62,8 +78,9 @@ async function Stochastic_function(closeValues, highValues, lowValues, period, s
     for (var x = 0; x < size; x++) { lowValues[x] = historyObject[x][3]; } // [x][4] this returns only low values
     for (var x = 0; x < size; x++) { highValues[x] = historyObject[x][2]; } // [x][4] this returns only high values
     console.log("___", coin, "___");
-    RSI_function(closeValues,50);
-    SMA_function(closeValues,20);
-    EMA_function(closeValues,20);
+    RSI_function(closeValues, 50);
+    SMA_function(closeValues, 20);
+    EMA_function(closeValues, 20);
     Stochastic_function(closeValues, highValues, lowValues, 14, 3);
+    MACD_function(closeValues, 5, 8, 3)
 })();

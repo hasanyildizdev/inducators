@@ -6,6 +6,7 @@ const SMA = require('technicalindicators').SMA;
 const EMA = require('technicalindicators').EMA;
 const Stochastic = require('technicalindicators').Stochastic;
 var MACD = require('technicalindicators').MACD;
+var BB = require('technicalindicators').BollingerBands;
 
 const coin = 'BTC/USDT';
 const timeframe = '1M';
@@ -68,6 +69,17 @@ async function MACD_function(closeValues,fastPeriod,slowPeriod,signalPeriod) {
     console.log(red("MACD: "), green(JSON.stringify(result[size - 1])));
 }
 
+async function BB_function(closeValues, period,stdDev){
+    var input = {
+        period : period, 
+        values : closeValues,
+        stdDev : stdDev
+        }
+    const result = BB.calculate(input);
+    var size = Object.keys(result).length;
+    console.log(red("BB: "), green(JSON.stringify(result[size - 1])));
+}
+
 (async function () {
     const closeValues = [];
     const highValues = [];
@@ -82,5 +94,6 @@ async function MACD_function(closeValues,fastPeriod,slowPeriod,signalPeriod) {
     SMA_function(closeValues, 20);
     EMA_function(closeValues, 20);
     Stochastic_function(closeValues, highValues, lowValues, 14, 3);
-    MACD_function(closeValues, 5, 8, 3)
+    MACD_function(closeValues, 5, 8, 3);
+    BB_function(closeValues,14,2);
 })();

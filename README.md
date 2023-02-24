@@ -8,3 +8,6 @@ This is for test purpose only.
 - Stochastic
 - MACD
 - BB
+- ADL
+- ADX
+- ATR

@@ -5,11 +5,11 @@ const RSI = require('technicalindicators').RSI;
 const SMA = require('technicalindicators').SMA;
 const EMA = require('technicalindicators').EMA;
 const Stochastic = require('technicalindicators').Stochastic;
-const MACD = require('technicalindicators').MACD;
 const BB = require('technicalindicators').BollingerBands;
 const ADL = require('technicalindicators').ADL;
 const ATR = require('technicalindicators').ATR
 const ADX = require('technicalindicators').ADX;
+const MACD = require('technicalindicators').MACD;
 
 const coin = 'BTC/USDT';
 const timeframe = '1M';
@@ -58,20 +58,6 @@ async function Stochastic_function(closeValues, highValues, lowValues, period, s
     console.log(red("Stochastic: "), green(JSON.stringify(result[size - 1])));
 }
 
-async function MACD_function(closeValues,fastPeriod,slowPeriod,signalPeriod) {
-    var macdInput = {
-        values:closeValues,
-        fastPeriod: fastPeriod,
-        slowPeriod: slowPeriod,
-        signalPeriod: signalPeriod,
-        SimpleMAOscillator: false,
-        SimpleMASignal: false
-    }
-    const result = MACD.calculate(macdInput);
-    var size = Object.keys(result).length;
-    console.log(red("MACD: "), green(JSON.stringify(result[size - 1])));
-}
-
 async function BB_function(closeValues, period,stdDev){
     var input = {
         period : period, 
@@ -118,6 +104,20 @@ async function ADX_function(closeValues,highValues,lowValues,period){
     var size = Object.keys(result).length;
     console.log(red("ADX: "), green(JSON.stringify(result[size - 1])));
 }
+
+async function MACD_function(closeValues){
+    var macdInput = {
+        values            :closeValues, 
+        fastPeriod        : 12,
+        slowPeriod        : 26,
+        signalPeriod      : 9 ,
+        SimpleMAOscillator: false,
+        SimpleMASignal    : false
+      }
+    const result = MACD.calculate(macdInput);
+    var size = Object.keys(result).length;
+    console.log(red("MACD: "), green(JSON.stringify(result[size - 1])));
+}
  
 (async function () {
     const closeValues = [];
@@ -135,9 +135,9 @@ async function ADX_function(closeValues,highValues,lowValues,period){
     SMA_function(closeValues, 20);
     EMA_function(closeValues, 20);
     Stochastic_function(closeValues, highValues, lowValues, 14, 3);
-    MACD_function(closeValues, 5, 8, 3);
     BB_function(closeValues,14,2);
     ADL_function(closeValues, highValues, lowValues,valumeValues);
     ATR_function(closeValues, highValues, lowValues, 14);
     ADX_function(closeValues, highValues, lowValues, 14);
+    MACD_function(closeValues);
 })();
